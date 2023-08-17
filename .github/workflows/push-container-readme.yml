@@ -1,0 +1,54 @@
+---
+name: Push README to Docker Hub and Quay.io
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - README.md
+
+  workflow_dispatch:
+
+jobs:
+  push_container_readme:
+    runs-on: ubuntu-22.04
+    name: Push README to Docker Hub
+
+    steps:
+      - name: git checkout readme
+        id: checkout-readme
+        uses: actions/checkout@v3
+        # Fetch only a README.md file
+        with:
+          sparse-checkout: |
+            README.md
+          sparse-checkout-cone-mode: false
+
+      - name: Change string case
+        id: change-string-case
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ github.repository }} 
+
+      - name: push README to Dockerhub
+        id: push-readme-to-dockerhub
+        uses: christian-korneck/update-container-description-action@v1
+        env:
+          DOCKER_USER: ${{ github.repository_owner }}
+          DOCKER_PASS: ${{ secrets.DOCKERHUB_TOKEN }}
+        with:
+          destination_container_repo: ${{ steps.change-string-case.outputs.lowercase }}
+          provider: dockerhub
+          short_description: ${{ github.event.repository.description }}
+          readme_file: 'README.md'
+
+      - name: Push README to Quay.io
+        id: push-readme-to-quayio
+        uses: christian-korneck/update-container-description-action@v1
+        env:
+          DOCKER_APIKEY: ${{ secrets.QUAYIO_APIKEY }}
+        with:
+          destination_container_repo: quay.io/${{ steps.change-string-case.outputs.lowercase }}
+          provider: quay
+          readme_file: 'README.md'
