@@ -19,7 +19,7 @@ jobs:
     # Step 1: run a standard checkout action, provided by github
     - name: Checkout target repo
       id: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # REQUIRED step
     # Step 2: run the sync action
