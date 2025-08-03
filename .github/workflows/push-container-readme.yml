@@ -27,7 +27,7 @@ jobs:
 
       - name: Change string case
         id: change-string-case
-        uses: ASzc/change-string-case-action@v5
+        uses: ASzc/change-string-case-action@v6
         with:
           string: ${{ github.repository }} 
 
