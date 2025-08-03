@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: git checkout readme
         id: checkout-readme
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         # Fetch only a README.md file
         with:
           sparse-checkout: |
